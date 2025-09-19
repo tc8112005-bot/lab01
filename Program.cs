@@ -1,32 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Text;
 
-namespace lab01_2
+namespace StudentTeacherApp
 {
-internal class Program
+
+    class Program
     {
         static void Main(string[] args)
         {
-        Console.OutputEncoding = System.Text.Encoding.UTF8;    
-        List<Student> studentList = new List<Student>();
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.InputEncoding = Encoding.UTF8;
+
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            List<Student> studentList = new List<Student>();
+            List<Teacher> teacherList = new List<Teacher>();
             bool exit = false;
 
             while (!exit)
             {
                 Console.WriteLine("=== MENU ===");
                 Console.WriteLine("1. Thêm sinh viên");
-                Console.WriteLine("2. Hiển thị danh sách sinh viên");
-                Console.WriteLine("3. Danh sách sinh viên khoa CNTT");
-                Console.WriteLine("4. Danh sách sinh viên có điểm TB >= 5");
-                Console.WriteLine("5. Sắp xếp sinh viên theo điểm TB");
-                Console.WriteLine("6. Sinh viên khoa CNTT có điểm TB >= 5");
-                Console.WriteLine("7. Sinh viên khoa CNTT có điểm TB cao nhất");
-                Console.WriteLine("8. Sinh viên khoa CNTT có điểm TB thấp nhất");
+                Console.WriteLine("2. Thêm giáo viên");
+                Console.WriteLine("3. Xuất danh sách sinh viên");
+                Console.WriteLine("4. Xuất danh sách giáo viên");
+                Console.WriteLine("5. Số lượng sinh viên và giáo viên");
+                Console.WriteLine("6. Xuất sinh viên khoa CNTT");
+                Console.WriteLine("7. Xuất giáo viên có địa chỉ chứa 'Quận 9'");
+                Console.WriteLine("8. Xuất sinh viên khoa CNTT có điểm trung bình cao nhất");
+                Console.WriteLine("9. Xếp loại sinh viên");
                 Console.WriteLine("0. Thoát");
-                Console.Write("Chọn chức năng (0-8): ");
+                Console.Write("Chọn chức năng (0-9): ");
                 string choice = Console.ReadLine();
 
                 switch (choice)
@@ -35,25 +41,28 @@ internal class Program
                         AddStudent(studentList);
                         break;
                     case "2":
-                        DisplayStudentList(studentList);
+                        AddTeacher(teacherList);
                         break;
                     case "3":
-                        DisplayStudentsByFaculty(studentList, "CNTT");
+                        DisplayStudentList(studentList);
                         break;
                     case "4":
-                        DisplayStudentsWithHighAverageScore(studentList, 5);
+                        DisplayTeacherList(teacherList);
                         break;
                     case "5":
-                        SortStudentsByAverageScore(studentList);
+                        DisplayCount(studentList, teacherList);
                         break;
                     case "6":
-                        DisplayStudentsByFacultyAndScore(studentList, "CNTT", 5);
+                        DisplayStudentsByFaculty(studentList, "CNTT");
                         break;
                     case "7":
-                        DisplayStudentsWithHighestAverageScoreByFaculty(studentList, "CNTT");
+                        DisplayTeachersByAddress(teacherList, "Quận 9");
                         break;
                     case "8":
-                        DisplayStudentsWithLowestAverageScoreByFaculty(studentList, "CNTT");
+                        DisplayHighestAverageScoreStudent(studentList, "CNTT");
+                        break;
+                    case "9":
+                        DisplayStudentClassification(studentList);
                         break;
                     case "0":
                         exit = true;
@@ -66,8 +75,7 @@ internal class Program
                 Console.WriteLine();
             }
         }
-
-        // case1
+        // case 1
         static void AddStudent(List<Student> studentList)
         {
             Console.WriteLine("=== Nhập thông tin sinh viên ===");
@@ -76,54 +84,63 @@ internal class Program
             studentList.Add(student);
             Console.WriteLine("Thêm sinh viên thành công!");
         }
-
-        // case 2
-        
+        //case 2
+        static void AddTeacher(List<Teacher> teacherList)
+        {
+            Console.WriteLine("=== Nhập thông tin giáo viên ===");
+            Teacher teacher = new Teacher();
+            teacher.Input();
+            teacherList.Add(teacher);
+            Console.WriteLine("Thêm giáo viên thành công!");
+        }
+        //case 3
         static void DisplayStudentList(List<Student> studentList)
         {
-            Console.WriteLine("=== Danh sách chi tiết thông tin sinh viên ===");
-            foreach (Student student in studentList)
+            Console.WriteLine("=== Danh sách sinh viên ===");
+            foreach (var student in studentList)
             {
                 student.Show();
             }
         }
-
-        // case 3
+        //case 4
+        static void DisplayTeacherList(List<Teacher> teacherList)
+        {
+            Console.WriteLine("=== Danh sách giáo viên ===");
+            foreach (var teacher in teacherList)
+            {
+                teacher.Show();
+            }
+        }
+        //case 5
+        static void DisplayCount(List<Student> studentList, List<Teacher> teacherList)
+        {
+            Console.WriteLine("Số lượng sinh viên: " + studentList.Count);
+            Console.WriteLine("Số lượng giáo viên: " + teacherList.Count);
+        }
+        //case 6
         static void DisplayStudentsByFaculty(List<Student> studentList, string faculty)
         {
-            Console.WriteLine("=== Danh sách sinh viên thuộc khoa {0} ===", faculty);
+            Console.WriteLine("=== Danh sách sinh viên khoa {0} ===", faculty);
             var students = studentList.Where(s => s.Faculty.Equals(faculty, StringComparison.OrdinalIgnoreCase)).ToList();
-            DisplayStudentList(students);
+            foreach (var student in students)
+            {
+                student.Show();
+            }
         }
-
-        // case 4
-        static void DisplayStudentsWithHighAverageScore(List<Student> studentList, float minDTB)
+        //case 7
+        static void DisplayTeachersByAddress(List<Teacher> teacherList, string addressKeyword)
         {
-            Console.WriteLine("=== Danh sách sinh viên có điểm TB >= {0} ===", minDTB);
-            var students = studentList.Where(s => s.AverageScore >= minDTB).ToList();
-            DisplayStudentList(students);
+            Console.WriteLine("=== Danh sách giáo viên có địa chỉ chứa '{0}' ===", addressKeyword);
+            var teachers = teacherList.Where(t => t.Address.IndexOf(addressKeyword,StringComparison.OrdinalIgnoreCase)>=0).ToList();
+            foreach (var teacher in teachers)
+            {
+                teacher.Show();
+            }
         }
-
-        // case 5
-        static void SortStudentsByAverageScore(List<Student> studentList)
+        //case 8
+        static void DisplayHighestAverageScoreStudent(List<Student> studentList, string faculty)
         {
-            Console.WriteLine("=== Danh sách sinh viên được sắp xếp theo điểm trung bình tăng dần ===");
-            var sortedStudents = studentList.OrderBy(s => s.AverageScore).ToList();
-            DisplayStudentList(sortedStudents);
-        }
-
-        // case 6
-        static void DisplayStudentsByFacultyAndScore(List<Student> studentList, string faculty, float minDTB)
-        {
-            Console.WriteLine("=== Danh sách sinh viên có điểm TB >= {0} và thuộc khoa {1} ===", minDTB, faculty);
-            var students = studentList.Where(s => s.AverageScore >= minDTB && s.Faculty.Equals(faculty, StringComparison.OrdinalIgnoreCase)).ToList();
-            DisplayStudentList(students);
-        }
-
-        // case 7
-        static void DisplayStudentsWithHighestAverageScoreByFaculty(List<Student> studentList, string faculty)
-        {
-            Console.WriteLine("=== Sinh viên có điểm TB cao nhất trong khoa {0} ===", faculty);
+            Console.WriteLine("=== Sinh viên khoa {0} có điểm trung bình cao nhất ===", faculty);
             var highestScoreStudent = studentList.Where(s => s.Faculty.Equals(faculty, StringComparison.OrdinalIgnoreCase))
                                                  .OrderByDescending(s => s.AverageScore)
                                                  .FirstOrDefault();
@@ -133,25 +150,29 @@ internal class Program
             }
             else
             {
-                Console.WriteLine("Không có sinh viên trong khoa này.");
+                Console.WriteLine("Không có sinh viên khoa {0}.", faculty);
             }
         }
-
-        // case 8
-        static void DisplayStudentsWithLowestAverageScoreByFaculty(List<Student> studentList, string faculty)
+        //case 9
+        static void DisplayStudentClassification(List<Student> studentList)
         {
-            Console.WriteLine("=== Sinh viên có điểm TB thấp nhất trong khoa {0} ===", faculty);
-            var lowestScoreStudent = studentList.Where(s => s.Faculty.Equals(faculty, StringComparison.OrdinalIgnoreCase))
-                                                 .OrderBy(s => s.AverageScore)
-                                                 .FirstOrDefault();
-            if (lowestScoreStudent != null)
+            int excellent = 0, good = 0, average = 0, weak = 0;
+            foreach (var student in studentList)
             {
-                lowestScoreStudent.Show();
+                if (student.AverageScore >= 8)
+                    excellent++;
+                else if (student.AverageScore >= 6.5)
+                    good++;
+                else if (student.AverageScore >= 5)
+                    average++;
+                else
+                    weak++;
             }
-            else
-            {
-                Console.WriteLine("Không có sinh viên trong khoa này.");
-            }
+
+            Console.WriteLine("Số lượng sinh viên xếp loại xuất sắc: {0}", excellent);
+            Console.WriteLine("Số lượng sinh viên xếp loại giỏi: {0}", good);
+            Console.WriteLine("Số lượng sinh viên xếp loại khá: {0}", average);
+            Console.WriteLine("Số lượng sinh viên xếp loại yếu: {0}", weak);
         }
     }
 }

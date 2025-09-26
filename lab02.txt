@@ -1,0 +1,5 @@
+﻿Build started at 12:19 CH...
+1>------ Build started: Project: WindowsFormsApp4, Configuration: Debug Any CPU ------
+1>  WindowsFormsApp4 -> C:\Users\Admin\Desktop\New folder\WindowsFormsApp4\WindowsFormsApp4\bin\Debug\WindowsFormsApp4.exe
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
+========== Build completed at 12:20 CH and took 07,820 seconds ==========
